@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<html>
+<title> Titanic data </title>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<style>
+p {
+    margin-left: 1cm;
+}
+h1 {
+    margin-left: 1cm;
+}
+h3 {
+    margin-left: 0.5cm;
+}
+section {
+    margin-left: 0.5cm;
+}
+</style>
+
+<body>
+  <h1> Titanic Data Visualisation </h1>
+<p> Is there a correlation between age and fare of those who survived based on the 
+port of embarkation or the sex?
+</p>  
+</body>
+<section>
+    <h3> Background </h3>
+      <p> 
+         The sinking of the RMS Titanic is one of the most infamous shipwrecks in 
+         history. On April 15, 1912, during her maiden voyage, the Titanic sank 
+         after colliding with an iceberg, killing 1502 out of 2224 passengers and crew.
+      </p>
+</section> 
+<section>
+    <h3> Story </h3>
+    <p> As the fare increased the probability to survive also increased. The
+        relationship between the age and fare is weak.
+       <ul>
+         <li> Most passengers embarked at Southampton and Cherbourg. </li> 
+         <li> Passengers from Cherbourg who payed a ticket higher than 400 were among the survived. </li> 
+         <li> Female survived more than male and those who payed the most expensive ticket had more chance to survive. </li> 
+       </ul>
+    </p>
+</section> 
+<div class="row">
+  <div class="col-md-3" id="area1"></div>
+  <div class="col-md-3" id="area2"></div>
+  <div class="col-md-3" id="area3"></div>
+</div>
+
+   <style>
+     rect.dimple-tooltip {
+          fill: Tomato !important;
+          border: solid;
+        }
+  </style>
+
+<div id="chartContainer">
+  
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="http://dimplejs.org/dist/dimple.v2.3.0.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+  
+          
+    var svg = dimple.newSvg("#area1", 600, 500);
+    
+      d3.csv("titanicSurvived.csv", function (data) {
+
+          // Draw the main chart
+          var bubbles = new dimple.chart(svg, data);
+          bubbles.setBounds(60, 90, 355, 310)
+          xAxis = bubbles.addMeasureAxis("x", "Age");
+          yAxis = bubbles.addMeasureAxis("y", "Fare");
+          xAxis.ticks = 10;
+          yAxis.tickFormat = ".0f";
+          yAxis.overrideMin = 0;
+          yAxis.overrideMax = 515;
+          
+          chart1 = bubbles.addSeries(["","Embarked" ], dimple.plot.bubble, [xAxis, yAxis] );
+
+         // chart1 = bubbles.addSeries(["Age", "Fare", "Embarked"], dimple.plot.bubble,[xAxis, yAxis]);
+          var myLegend = bubbles.addLegend(80, 45, 380, 20, "left");
+          bubbles.assignColor("Cherbourg", "#00BFFF", "black", 0.5);
+          bubbles.assignColor("Southampton", "#FF1493", "black", 0.5);
+          bubbles.assignColor("Queenstown", "#556B2F", "black", 0.5);
+          myLegend.fontSize = 12;
+          
+          // Draw the bubble chart
+          bubbles.draw();
+
+          // Orphan the legends as they are consistent but by default they
+          // will refresh on tick
+          bubbles.legends = [];
+          
+          
+          // This block simply adds the legend title. I put it into a d3 data
+          // object to split it onto 2 lines.  This technique works with any
+          // number of lines, it isn't dimple specific.
+          //Embarked legend title
+          svg.selectAll("EmbarkedLabel")
+            .data(["Port of Embarkation:"])
+            .enter()
+            .append("text")
+              .attr("x", 60)
+              .attr("y", function (d, i) { return 30 + i * 12; })
+              .style("font-size", "14px")
+              .style("font-weight", "bold")
+              .style("color", "Black")
+              .style("font-family", "sans-serif")
+              .text(function (d) { return d; });
+              
+          
+          svg.selectAll("title_text")
+                  .data(["*Click Port color to show/hide", "port of Embarkation:"])
+                  .enter()
+                  .append("text")
+                  .attr("x", 200)
+                  .attr("y", function (d, i) { return 25 + i * 12; })
+                  .style("font-family", "sans-serif")
+                  .style("font-size", "10px")
+                  .style("font-style", "italic")
+                  .style("color", "Black")
+                  .text(function (d) { return d; });
+                  
+                  
+         //Correlation Explanation title
+          svg.selectAll("CorrelationTitle")
+            .data(["Correlation:"])
+            .enter()
+            .append("text")
+            .attr("x", 70)
+            .attr("y", function (d, i) { return 75 + i * 12; })
+            .style("font-size", "14px")
+            .style("font-weight", "bold")
+            .style("color", "Black")
+            .style("font-family", "sans-serif")
+            .text(function (d) { return d; } );
+
+          //Correlation Explanation
+          svg.selectAll("Corexplanation")
+            .data(["Correlation of Fare and age for Cherbourg (0.16)", 
+             "Southampton (0.09), Queenstown (0.61)."])
+            .enter()
+            .append("text")
+            .attr("x", 150)
+            .attr("y", function (d, i) { return 70 + i * 12; })
+            .style("font-size", "11px")
+            .style("font-family", "sans-serif")
+            .text(function (d) { return d; });         
+            
+          
+            // Use the series name and access its tooltip
+                chart1.getTooltipText = function(e) {
+ 
+                    // hovering over the chart fires an event
+                    // which creates an object 'e' 
+                    // with the information that you want
+
+                    // when you hover over different parts of your chart
+                    // this statement outputs the contents of 'e' to console:
+                    console.log(e);
+
+                    // When you change the tooltip, formatting of floats 
+                    // is lost, so you have to round floats:
+                    
+                    r = Math.round(e.yValue);
+                    return ["Age: " + e.cx, 
+                            "Fare: " + r, 
+                            "Port of Embarkation: " + e.aggField[1]];
+                };
+          
+                  
+            // Get a unique list of Owner values to use when filtering
+          var filterValues = dimple.getUniqueValues(data, "Embarked");
+          // Get all the rectangles from our now orphaned legend
+               myLegend.shapes.selectAll("rect")
+          // Add a click event to each rectangle
+               .on("click", function (e) {
+            // This indicates whether the item is already visible or not
+            var hide = false;
+            var newFilters = [];
+            // If the filters contain the clicked shape hide it
+            filterValues.forEach(function (f) {
+              if (f === e.aggField.slice(-1)[0]) {
+                hide = true;
+              } else {
+                newFilters.push(f);
+              }
+            });
+            // Hide the shape or show it
+            if (hide) {
+              d3.select(this).style("opacity", 0.2);
+            } else {
+              newFilters.push(e.aggField.slice(-1)[0]);
+              d3.select(this).style("opacity", 0.8);
+            }
+            // Update the filters
+            filterValues = newFilters;
+            // Filter the data
+             bubbles.data = dimple.filterData(data, "Embarked", filterValues);
+            // Passing a duration parameter makes the chart animate. Without
+            // it there is no transition
+             bubbles.draw(800);
+     
+        });
+      
+       });
+        
+      /// Second Chart
+      var svg1 = dimple.newSvg("#area2", 600, 500);
+    
+       d3.csv("titanicSurvived.csv", function (data) {
+        
+          // Draw the main chart
+          var bubbles1 = new dimple.chart(svg1, data);
+          bubbles1.setBounds(150, 90, 355, 310)
+          
+          xAxis1 = bubbles1.addMeasureAxis("x", "Age");
+          yAxis1 = bubbles1.addMeasureAxis("y", "Fare");
+          xAxis1.ticks = 10;
+          yAxis1.tickFormat = ".0f";
+          chart2 = bubbles1.addSeries(["Age", "Fare", "Sex"], dimple.plot.bubble,[xAxis1, yAxis1]);
+         
+         var myLegend1 = bubbles1.addLegend(170, 45, 380, 20, "left");
+             bubbles1.assignColor("Female", "#FF8C00", "black", 0.5);
+             //bubbles1.assignColor("Male", "#0000CD", "black", 0.5);
+            myLegend1.fontSize = 12;
+          
+          // Draw the bubble chart
+          bubbles1.draw();
+
+          // Orphan the legends as they are consistent but by default they
+          // will refresh on tick
+          bubbles1.legends = [];
+          
+          // Use the series name and access its tooltip
+           chart2.getTooltipText = function(e) {
+ 
+            // hovering over the chart fires an event
+            // which creates an object 'e' 
+            // with the information that you want
+
+            // when you hover over different parts of your chart
+            // this statement outputs the contents of 'e' to console:
+            console.log(e);
+
+                // When you change the tooltip, formatting of floats 
+                // is lost, so you have to round floats:
+                
+            perc1 = Math.round(e.aggField[1]);
+            return ["Age: " + e.cx, 
+                    "Fare: " + perc1, 
+                    "Sex: " + e.aggField[2]];
+             };
+          
+          
+          // This block simply adds the legend title. I put it into a d3 data
+          // object to split it onto 2 lines.  This technique works with any
+          // number of lines, it isn't dimple specific.
+          //Gender legend title
+          svg1.selectAll("GenderLabel")
+            .data(["Gender:"])
+            .enter()
+            .append("text")
+              .attr("x", 160)
+              .attr("y", function (d, i) { return 35 + i * 12; })
+              .style("font-size", "14px")
+              .style("font-weight", "bold")
+              .style("color", "Black")
+              .style("font-family", "sans-serif")
+              .text(function (d) { return d; });
+              
+          
+          svg1.selectAll("GenderTitle")
+                  .data(["*Click gender color to show/hide Gender"])
+                  .enter()
+                  .append("text")
+                  .attr("x", 220)
+                  .attr("y", function (d, i) { return 35 + i * 12; })
+                  .style("font-family", "sans-serif")
+                  .style("font-size", "10px")
+                  .style("font-style", "italic")
+                  .style("color", "Black")
+                  .text(function (d) { return d; });
+                  
+                  
+         //Correlation Explanation title
+          svg1.selectAll("CorrelationTitle")
+            .data(["Correlation:"])
+            .enter()
+            .append("text")
+            .attr("x", 150)
+            .attr("y", function (d, i) { return 75 + i * 12; })
+            .style("font-size", "14px")
+            .style("font-weight", "bold")
+            .style("color", "Black")
+            .style("font-family", "sans-serif")
+            .text(function (d) { return d; } );
+
+          //Correlation Explanation
+          svg1.selectAll("Corexplanation")
+              .data(["Correlation of Fare and age for Female (0.19)", 
+              " and for Male (0.11)."])
+             .enter()
+             .append("text")
+            .attr("x", 230)
+            .attr("y", function (d, i) { return 70 + i * 12; })
+            .style("font-size", "11px")
+            .style("font-family", "sans-serif")
+            .text(function (d) { return d; });         
+                 
+                  
+            // Get a unique list of Owner values to use when filtering
+          var filterValues1 = dimple.getUniqueValues(data, "Sex");
+          // Get all the rectangles from our now orphaned legend
+               myLegend1.shapes.selectAll("rect")
+          // Add a click event to each rectangle
+               .on("click", function (e) {
+            // This indicates whether the item is already visible or not
+            var hide1 = false;
+            var newFilters1 = [];
+            // If the filters contain the clicked shape hide it
+            filterValues1.forEach(function (f) {
+              if (f === e.aggField.slice(-1)[0]) {
+                hide1 = true;
+              } else {
+                newFilters1.push(f);
+              }
+            });
+            // Hide the shape or show it
+            if (hide1) {
+              d3.select(this).style("opacity", 0.2);
+            } else {
+              newFilters1.push(e.aggField.slice(-1)[0]);
+              d3.select(this).style("opacity", 0.8);
+            }
+            // Update the filters
+            filterValues1 = newFilters1;
+            // Filter the data
+             bubbles1.data = dimple.filterData(data, "Sex", filterValues1);
+            // Passing a duration parameter makes the chart animate. Without
+            // it there is no transition
+             bubbles1.draw(800);
+     
+        });
+      
+       });
+        
+       
+       /// Third Chart
+       // This is the simple vertical grouped stacked 100% bar example
+      var svg3 = dimple.newSvg("#area3", 600, 500);
+                 d3.csv("titanicMod2.csv", function (data) {
+      var myChart = new dimple.chart(svg3, data);
+          myChart.setBounds(250, 90, 350, 315)
+      var x = myChart.addCategoryAxis("x", "Embarked");
+      var y = myChart.addPctAxis("y", "Survived");
+      var s = myChart.addSeries("Sex", dimple.plot.bar);
+         x.title= 'Port of Embarkation';      
+         y.title= 'Survived Passengers (%)';
+              
+         //addLegend(80, 45, 380, 20, "left") 60, 90, 355, 310)
+      var myLegend2 = myChart.addLegend(80, 50, 380, 20, "right");
+          myChart.assignColor("Female", "#FF8C00", "black", 0.5);
+          //myChart.assignColor("Male", "#0000CD", "black", 0.5);
+          //Increase the size of the legend
+          myLegend2.fontSize = 12;
+             
+          myChart.draw();
+          
+     svg3.selectAll("survivalRate")
+                  .data(["*Hover on the chart to see the gender survival rate"])
+                  .enter()
+                  .append("text")
+                  .attr("x", 250)
+                  .attr("y", function (d, i) { return 75 + i * 12; })
+                  .style("font-family", "sans-serif")
+                  .style("font-size", "10px")
+                  .style("font-style", "italic")
+                  .style("color", "Black")
+                  .text(function (d) { return d; });     
+ 
+    });   
+       
+        
+  </script>
+</div>
+</html>
