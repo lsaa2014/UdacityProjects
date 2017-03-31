@@ -9,8 +9,8 @@ Using Dimple.js, I created the first plot after removing the missing value as we
 <a href="http://bl.ocks.org/lsaa2014/97e390dab1b74f9cd9915c3324c7237d"> here </a>. After the first two feedback, I mapped 
 the columns Embarked (S:Southampton, C:Cherbourg, Q:Queenstown) and Survived (1:'Yes', 0: 'No') so that they could be more readable.
 I also added some narration see <a href="http://bl.ocks.org/lsaa2014/38ec5a937eb84b17442e20033fad5ffa"> here </a>.
-After the third feedback, I decided to filter the data and choose only those who survived and I remove the storyboard and leave the legend as is.
-The Final plot could be visualize <a href="http://bl.ocks.org/lsaa2014/bb2663e96cc13e858b77c13ba0ea2b31"> here </a>
+After the third feedback, I decided to filter the data and choose only those who survived and I removed the storyboard and left the legend as is. The plot could be visualized <a href="http://bl.ocks.org/lsaa2014/bb2663e96cc13e858b77c13ba0ea2b31"> here </a>.
+Because some of my findings were not consistent with the graphs, I decided to add a bart chart to see the survival rate. The final result look is <a href="http://bl.ocks.org/lsaa2014/1cc3bee7cbdfda9afed4e8d26b46238f"> here </a>.
 
 ## Feedback
 #### Feedback #1
@@ -51,3 +51,4 @@ Someone is aged 120+ and there is a fare of 1000+, shouldn't this be removed?
 ## Reference
 - http://dimplejs.org/examples_index.html
 - http://stackoverflow.com
+- https://leanpub.com/D3-Tips-and-Tricks/read
