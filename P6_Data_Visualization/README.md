@@ -4,13 +4,18 @@ This visualization shows the relationship between the fare and age of passengers
 Passengers from Cherbourg who payed a ticket higher than 400 were among the survived. Female survived than male and those who payed the most expensive ticket had more chance to survive.            
 
 # Design
+The Titanic data was obtained from <a href="https://www.kaggle.com/c/titanic/data"> Kaggle </a>. I used these variables:
+- Age (Age in years) will be on the x-axis
+- Fare (Passenger fare) will be on the y-axis
+- Port of Embarkation (C = Cherbourg, Q = Queenstown, S = Southampton) will be represented by color encoding using different color for eac
+- Sex, (female or male) will be represented by color encoding using different color for each.      
+
 I choose the scatterplot to represent the relationship between age and fare based on the port of embarkation and gender.
 Using Dimple.js, I created the first plot after removing the missing value as we can see
 <a href="http://bl.ocks.org/lsaa2014/97e390dab1b74f9cd9915c3324c7237d"> here </a>. After the first two feedback, I mapped 
 the columns Embarked (S:Southampton, C:Cherbourg, Q:Queenstown) and Survived (1:'Yes', 0: 'No') so that they could be more readable.
 I also added some narration see <a href="http://bl.ocks.org/lsaa2014/38ec5a937eb84b17442e20033fad5ffa"> here </a>.
-After the third feedback, I decided to filter the data and choose only those who survived and I removed the storyboard and left the legend as is. The plot could be visualized <a href="http://bl.ocks.org/lsaa2014/bb2663e96cc13e858b77c13ba0ea2b31"> here </a>.
-Because some of my findings were not consistent with the graphs, I decided to add a bart chart to see the survival rate. The final result look is <a href="http://bl.ocks.org/lsaa2014/1cc3bee7cbdfda9afed4e8d26b46238f"> here </a>.
+After the third feedback, I decided to filter the data and choose only those who survived and I removed the storyboard and left the legend as is. The final plot could be visualized <a href="http://bl.ocks.org/lsaa2014/bb2663e96cc13e858b77c13ba0ea2b31"> here </a>.
 
 ## Feedback
 #### Feedback #1
